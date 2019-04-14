@@ -1,13 +1,96 @@
 #pragma once
 #include "Person.h"
+#include <mysql.h>
 
 class User : public Person {
 
 private:
 
 	string pass,cpass;
+	MYSQL* conn;
+	MYSQL_ROW row;
+	MYSQL_RES *res;
+	int qstate;
+
 
 public:
+
+	bool check_user(string username, string password) {
+
+			conn = mysql_init(0);
+
+			conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
+
+			if (conn) {
+
+				qstate = mysql_query(conn, "select * from user");
+
+				if (!qstate) {
+					
+					res = mysql_store_result(conn);
+
+					while (row = mysql_fetch_row(res)) {
+
+						cout << row[0] << row[1] << row[2];
+
+						if (username == row[1] && password == row[2]) {
+
+							return true;
+						}
+					}
+					return false;
+				}
+			}
+		}
+	bool check_user(string uname) {
+
+		conn = mysql_init(0);
+
+		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
+
+		if (conn) {
+
+			qstate = mysql_query(conn, "select * from user");
+
+			if (!qstate) {
+
+				res = mysql_store_result(conn);
+
+				while (row = mysql_fetch_row(res)) {
+
+					if (uname == row[1]) {
+
+						return false;
+					}
+
+				}
+				return true;
+			}
+		}
+	}
+	bool check_pass(string pass, string cpass) {
+
+		if (pass == cpass) {
+
+			return true;
+		}
+		else {
+
+			return false;
+		}
+	}
+	void insert_data(string first_name, string last_name, string username, string password) {
+
+		conn = mysql_init(0);
+
+		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
+
+		string query = "insert into user(username,password,first_name,last_name) values('" + username + "','" + password + "','" + first_name + "','" + last_name + "')";
+
+		const char* q = query.c_str();
+		mysql_query(conn, q);
+
+	}
 
 	User() {}
 
