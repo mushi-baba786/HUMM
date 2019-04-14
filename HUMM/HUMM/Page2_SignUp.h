@@ -1,5 +1,10 @@
 #pragma once
 
+#include "Page3_MainMenu.h"
+#include <msclr\marshal_cppstd.h>
+#include"User.h"
+#include <mysql.h>
+
 namespace HUMM {
 
 	using namespace System;
@@ -43,13 +48,82 @@ namespace HUMM {
 				delete components;
 			}
 		}
+		bool check_user(string uname) {
+
+			MYSQL* conn;
+			MYSQL_ROW row;
+			MYSQL_RES *res;
+
+			int qstate;
 
 
+			conn = mysql_init(0);
 
-	private: System::Windows::Forms::TextBox^  textBox4;
-	private: System::Windows::Forms::TextBox^  textBox3;
-	private: System::Windows::Forms::TextBox^  textBox2;
-	private: System::Windows::Forms::TextBox^  textBox1;
+			conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
+
+			if (conn) {
+
+				qstate = mysql_query(conn, "select * from user");
+
+				if (!qstate) {
+
+					res = mysql_store_result(conn);
+
+					while (row = mysql_fetch_row(res)) {
+
+						if (uname == row[1]) {
+
+							return false;
+						}
+
+					}
+					return true;
+				}
+			}
+		}
+		bool check_pass(string pass, string cpass) {
+
+			if (pass == cpass) {
+
+				return true;
+			}
+			else {
+
+				return false;
+			}
+		}
+		void insert_data(string first_name, string last_name, string username, string password) {
+
+
+			cout << first_name << last_name << username << password;
+
+			MYSQL* conn;
+			MYSQL_ROW row;
+			MYSQL_RES *res;
+
+			int qstate;
+
+
+			conn = mysql_init(0);
+
+			conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
+
+			string query="insert into user(username,password,first_name,last_name) values('"+username+"','"+password +"','"+first_name +"','"+last_name+"')";
+
+			const char* q = query.c_str();
+			cout << "query is:" << q << endl;
+			mysql_query(conn, q);
+
+		}
+
+
+	private: System::Windows::Forms::TextBox^  pass;
+	private: System::Windows::Forms::TextBox^  uname;
+
+	private: System::Windows::Forms::TextBox^  lname;
+
+	private: System::Windows::Forms::TextBox^  fname;
+
 	private: System::Windows::Forms::Button^  button7;
 
 	private: System::Windows::Forms::Button^  button5;
@@ -59,7 +133,8 @@ namespace HUMM {
 	private: System::Windows::Forms::Label^  label9;
 	private: System::Windows::Forms::Label^  label8;
 	private: System::Windows::Forms::Label^  label3;
-	private: System::Windows::Forms::TextBox^  textBox6;
+	private: System::Windows::Forms::TextBox^  cpass;
+
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::GroupBox^  groupBox1;
 	protected:
@@ -78,10 +153,10 @@ namespace HUMM {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Page2_SignUp::typeid));
-			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
-			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
-			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->pass = (gcnew System::Windows::Forms::TextBox());
+			this->uname = (gcnew System::Windows::Forms::TextBox());
+			this->lname = (gcnew System::Windows::Forms::TextBox());
+			this->fname = (gcnew System::Windows::Forms::TextBox());
 			this->button7 = (gcnew System::Windows::Forms::Button());
 			this->button5 = (gcnew System::Windows::Forms::Button());
 			this->label11 = (gcnew System::Windows::Forms::Label());
@@ -89,48 +164,54 @@ namespace HUMM {
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->textBox6 = (gcnew System::Windows::Forms::TextBox());
+			this->cpass = (gcnew System::Windows::Forms::TextBox());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->groupBox1->SuspendLayout();
 			this->SuspendLayout();
 			// 
-			// textBox4
+			// pass
 			// 
-			this->textBox4->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->pass->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->textBox4->Location = System::Drawing::Point(342, 223);
-			this->textBox4->Name = L"textBox4";
-			this->textBox4->Size = System::Drawing::Size(192, 33);
-			this->textBox4->TabIndex = 21;
-			this->textBox4->UseSystemPasswordChar = true;
+			this->pass->Location = System::Drawing::Point(456, 274);
+			this->pass->Margin = System::Windows::Forms::Padding(4);
+			this->pass->Name = L"pass";
+			this->pass->Size = System::Drawing::Size(255, 40);
+			this->pass->TabIndex = 21;
+			this->pass->UseSystemPasswordChar = true;
 			// 
-			// textBox3
+			// uname
 			// 
-			this->textBox3->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->uname->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->textBox3->Location = System::Drawing::Point(343, 169);
-			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(192, 33);
-			this->textBox3->TabIndex = 20;
+			this->uname->Location = System::Drawing::Point(457, 208);
+			this->uname->Margin = System::Windows::Forms::Padding(4);
+			this->uname->Name = L"uname";
+			this->uname->Size = System::Drawing::Size(255, 40);
+			this->uname->TabIndex = 20;
+			this->uname->TextChanged += gcnew System::EventHandler(this, &Page2_SignUp::uanme_TextChanged);
 			// 
-			// textBox2
+			// lname
 			// 
-			this->textBox2->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->lname->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->textBox2->Location = System::Drawing::Point(343, 114);
-			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(192, 33);
-			this->textBox2->TabIndex = 19;
+			this->lname->Location = System::Drawing::Point(457, 140);
+			this->lname->Margin = System::Windows::Forms::Padding(4);
+			this->lname->Name = L"lname";
+			this->lname->Size = System::Drawing::Size(255, 40);
+			this->lname->TabIndex = 19;
 			// 
-			// textBox1
+			// fname
 			// 
-			this->textBox1->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->fname->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->textBox1->Location = System::Drawing::Point(343, 61);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(192, 33);
-			this->textBox1->TabIndex = 18;
+			this->fname->Location = System::Drawing::Point(457, 75);
+			this->fname->Margin = System::Windows::Forms::Padding(4);
+			this->fname->Name = L"fname";
+			this->fname->Size = System::Drawing::Size(255, 40);
+			this->fname->TabIndex = 18;
+			this->fname->TextChanged += gcnew System::EventHandler(this, &Page2_SignUp::textBox1_TextChanged);
 			// 
 			// button7
 			// 
@@ -140,11 +221,11 @@ namespace HUMM {
 				static_cast<System::Byte>(0)));
 			this->button7->ForeColor = System::Drawing::Color::White;
 			this->button7->ImageAlign = System::Drawing::ContentAlignment::MiddleLeft;
-			this->button7->Location = System::Drawing::Point(210, 379);
-			this->button7->Margin = System::Windows::Forms::Padding(7, 9, 7, 9);
+			this->button7->Location = System::Drawing::Point(280, 466);
+			this->button7->Margin = System::Windows::Forms::Padding(9, 11, 9, 11);
 			this->button7->Name = L"button7";
 			this->button7->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->button7->Size = System::Drawing::Size(125, 50);
+			this->button7->Size = System::Drawing::Size(167, 62);
 			this->button7->TabIndex = 17;
 			this->button7->Text = L"Register";
 			this->button7->UseVisualStyleBackColor = false;
@@ -158,11 +239,11 @@ namespace HUMM {
 				static_cast<System::Byte>(0)));
 			this->button5->ForeColor = System::Drawing::Color::White;
 			this->button5->ImageAlign = System::Drawing::ContentAlignment::MiddleLeft;
-			this->button5->Location = System::Drawing::Point(364, 379);
-			this->button5->Margin = System::Windows::Forms::Padding(7, 9, 7, 9);
+			this->button5->Location = System::Drawing::Point(485, 466);
+			this->button5->Margin = System::Windows::Forms::Padding(9, 11, 9, 11);
 			this->button5->Name = L"button5";
 			this->button5->RightToLeft = System::Windows::Forms::RightToLeft::No;
-			this->button5->Size = System::Drawing::Size(125, 50);
+			this->button5->Size = System::Drawing::Size(167, 62);
 			this->button5->TabIndex = 15;
 			this->button5->Text = L"Cancel";
 			this->button5->UseVisualStyleBackColor = false;
@@ -175,9 +256,10 @@ namespace HUMM {
 			this->label11->Font = (gcnew System::Drawing::Font(L"Calibri", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label11->ForeColor = System::Drawing::Color::White;
-			this->label11->Location = System::Drawing::Point(150, 223);
+			this->label11->Location = System::Drawing::Point(200, 274);
+			this->label11->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(177, 29);
+			this->label11->Size = System::Drawing::Size(218, 37);
 			this->label11->TabIndex = 3;
 			this->label11->Text = L"Enter Password:";
 			// 
@@ -188,9 +270,10 @@ namespace HUMM {
 			this->label10->Font = (gcnew System::Drawing::Font(L"Calibri", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label10->ForeColor = System::Drawing::Color::White;
-			this->label10->Location = System::Drawing::Point(237, 172);
+			this->label10->Location = System::Drawing::Point(316, 212);
+			this->label10->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label10->Name = L"label10";
-			this->label10->Size = System::Drawing::Size(88, 29);
+			this->label10->Size = System::Drawing::Size(110, 37);
 			this->label10->TabIndex = 2;
 			this->label10->Text = L"UserID:";
 			// 
@@ -201,9 +284,10 @@ namespace HUMM {
 			this->label9->Font = (gcnew System::Drawing::Font(L"Calibri", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label9->ForeColor = System::Drawing::Color::White;
-			this->label9->Location = System::Drawing::Point(201, 117);
+			this->label9->Location = System::Drawing::Point(268, 144);
+			this->label9->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(125, 29);
+			this->label9->Size = System::Drawing::Size(156, 37);
 			this->label9->TabIndex = 1;
 			this->label9->Text = L"Last Name:";
 			// 
@@ -214,9 +298,10 @@ namespace HUMM {
 			this->label8->Font = (gcnew System::Drawing::Font(L"Calibri", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label8->ForeColor = System::Drawing::Color::White;
-			this->label8->Location = System::Drawing::Point(201, 61);
+			this->label8->Location = System::Drawing::Point(268, 75);
+			this->label8->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(129, 29);
+			this->label8->Size = System::Drawing::Size(160, 37);
 			this->label8->TabIndex = 0;
 			this->label8->Text = L"First Name:";
 			// 
@@ -227,21 +312,23 @@ namespace HUMM {
 			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 11.25F, System::Drawing::FontStyle::Underline, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->ForeColor = System::Drawing::SystemColors::ButtonHighlight;
-			this->label3->Location = System::Drawing::Point(320, 534);
+			this->label3->Location = System::Drawing::Point(427, 657);
+			this->label3->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(168, 18);
+			this->label3->Size = System::Drawing::Size(210, 24);
 			this->label3->TabIndex = 13;
 			this->label3->Text = L"Powered By: HummSoft";
 			// 
-			// textBox6
+			// cpass
 			// 
-			this->textBox6->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->cpass->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->textBox6->Location = System::Drawing::Point(342, 279);
-			this->textBox6->Name = L"textBox6";
-			this->textBox6->Size = System::Drawing::Size(192, 33);
-			this->textBox6->TabIndex = 24;
-			this->textBox6->UseSystemPasswordChar = true;
+			this->cpass->Location = System::Drawing::Point(456, 343);
+			this->cpass->Margin = System::Windows::Forms::Padding(4);
+			this->cpass->Name = L"cpass";
+			this->cpass->Size = System::Drawing::Size(255, 40);
+			this->cpass->TabIndex = 24;
+			this->cpass->UseSystemPasswordChar = true;
 			// 
 			// label1
 			// 
@@ -250,33 +337,36 @@ namespace HUMM {
 			this->label1->Font = (gcnew System::Drawing::Font(L"Calibri", 18, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label1->ForeColor = System::Drawing::Color::White;
-			this->label1->Location = System::Drawing::Point(128, 280);
+			this->label1->Location = System::Drawing::Point(171, 345);
+			this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(204, 29);
+			this->label1->Size = System::Drawing::Size(251, 37);
 			this->label1->TabIndex = 23;
 			this->label1->Text = L"Confirm Password:";
 			// 
 			// groupBox1
 			// 
 			this->groupBox1->BackColor = System::Drawing::Color::Maroon;
-			this->groupBox1->Controls->Add(this->textBox3);
-			this->groupBox1->Controls->Add(this->textBox6);
+			this->groupBox1->Controls->Add(this->uname);
+			this->groupBox1->Controls->Add(this->cpass);
 			this->groupBox1->Controls->Add(this->button7);
 			this->groupBox1->Controls->Add(this->label11);
 			this->groupBox1->Controls->Add(this->button5);
 			this->groupBox1->Controls->Add(this->label1);
 			this->groupBox1->Controls->Add(this->label10);
-			this->groupBox1->Controls->Add(this->textBox4);
+			this->groupBox1->Controls->Add(this->pass);
 			this->groupBox1->Controls->Add(this->label9);
 			this->groupBox1->Controls->Add(this->label8);
-			this->groupBox1->Controls->Add(this->textBox2);
-			this->groupBox1->Controls->Add(this->textBox1);
+			this->groupBox1->Controls->Add(this->lname);
+			this->groupBox1->Controls->Add(this->fname);
 			this->groupBox1->Font = (gcnew System::Drawing::Font(L"Calibri", 18, static_cast<System::Drawing::FontStyle>((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Underline)),
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 			this->groupBox1->ForeColor = System::Drawing::Color::White;
-			this->groupBox1->Location = System::Drawing::Point(56, 50);
+			this->groupBox1->Location = System::Drawing::Point(75, 62);
+			this->groupBox1->Margin = System::Windows::Forms::Padding(4);
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size(669, 454);
+			this->groupBox1->Padding = System::Windows::Forms::Padding(4);
+			this->groupBox1->Size = System::Drawing::Size(892, 559);
 			this->groupBox1->TabIndex = 25;
 			this->groupBox1->TabStop = false;
 			this->groupBox1->Text = L"REGISTRATION:";
@@ -284,14 +374,15 @@ namespace HUMM {
 			// 
 			// Page2_SignUp
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
-			this->ClientSize = System::Drawing::Size(784, 561);
+			this->ClientSize = System::Drawing::Size(1045, 690);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->label3);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::Fixed3D;
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
+			this->Margin = System::Windows::Forms::Padding(4);
 			this->Name = L"Page2_SignUp";
 			this->Text = L"Page2_SignUp";
 			this->Load += gcnew System::EventHandler(this, &Page2_SignUp::Page2_SignUp_Load);
@@ -309,12 +400,32 @@ namespace HUMM {
 	}
 
 	private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e) {
-	this->Hide();
-	obj->Show();
+		
+		User u(msclr::interop::marshal_as<std::string>(fname->Text), msclr::interop::marshal_as<std::string>(lname->Text),msclr::interop::marshal_as<std::string>(uname->Text),
+				msclr::interop::marshal_as < std::string>(pass->Text), msclr::interop::marshal_as < std::string>(cpass->Text));
+
+		bool x = check_user(u.getuname());
+
+		if (x) {
+
+			bool y = check_pass(u.getpass(), u.getcpass());
+
+			if (y) {
+
+				insert_data(u.getfirstname(), u.getlastname(), u.getuname(), u.getpass());
+			}
+		}
+		
+		this->Hide();
+		obj->Show();
 }
 private: System::Void Page2_SignUp_Load(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void groupBox1_Enter(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void uanme_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 };
 }

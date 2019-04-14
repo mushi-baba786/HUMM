@@ -1,14 +1,17 @@
 #pragma once
 #include "Page3_MainMenu.h"
 #include "Page2_SignUp.h"
-#include <msclr/marshal_cppstd.h>
+#include <msclr\marshal_cppstd.h>
 #include"User.h"
-#include"mysql.h"
-#include <string>
+#include <mysql.h>
 
 namespace HUMM {
-
+	
+	using namespace std;
 	using namespace System;
+	// This converts from textbox to string readable by c++
+	using namespace msclr::interop;
+
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
@@ -40,6 +43,7 @@ namespace HUMM {
 				delete components;
 			}
 		}
+
 		bool check_user(string username, string password) {
 
 			MYSQL* conn;
@@ -57,24 +61,30 @@ namespace HUMM {
 				qstate = mysql_query(conn, "select * from user");
 
 				if (!qstate) {
-
+					
 					res = mysql_store_result(conn);
 
 					while (row = mysql_fetch_row(res)) {
 
+						cout << row[0] << row[1] << row[2];
+
 						if (username == row[1] && password == row[2]) {
+
+							
+							cout << "user found";
 
 							return true;
 						}
 						else {
 
-							return false;
+							cout << "user not found" << endl;
+							
 						}
 					}
+					return false;
 				}
 			}
 		}
-
 	private: System::Windows::Forms::PictureBox^  pictureBox1;
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::PictureBox^  pictureBox2;
@@ -324,43 +334,42 @@ namespace HUMM {
 	}
 	private: System::Void pictureBox3_Click(System::Object^  sender, System::EventArgs^  e) {
 	}
-private: System::Void textBox1_Click(System::Object^  sender, System::EventArgs^  e) 
-{
-	username->Clear();
+	private: System::Void textBox1_Click(System::Object^  sender, System::EventArgs^  e) 
+	{
+		username->Clear();
 
-}
-private: System::Void textBox2_Click(System::Object^  sender, System::EventArgs^  e) {
-	password->Clear();
-}
-private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void textBox2_Click(System::Object^  sender, System::EventArgs^  e) {
+		password->Clear();
+	}
+	private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 
-	msclr::interop::marshal_context context;
 
-	User u(msclr::interop::marshal_as<std::string>(username->Text), msclr::interop::marshal_as < std::string>(password->Text));
+		User u(marshal_as <string>(username->Text), marshal_as <string>(password->Text));
 
-	bool x = check_user(u.getuname(), u.getpass());
+		bool x = check_user(u.getuname(), u.getpass());
 
-	if (x) {
+		if (x) {
 
+			this->Hide();
+			Page3_MainMenu^ P3 = gcnew Page3_MainMenu(this);
+			P3->ShowDialog();
+		}
+		else {
+
+
+		}
+	}
+	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
 		this->Hide();
-		Page3_MainMenu^ P3 = gcnew Page3_MainMenu(this);
-		P3->ShowDialog();
+		Page2_SignUp^ P2 = gcnew Page2_SignUp(this);
+		P2->ShowDialog();
 	}
-	else {
-
-
+	private: System::Void pictureBox5_Click(System::Object^  sender, System::EventArgs^  e) {
 	}
-}
-private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-	this->Hide();
-	Page2_SignUp^ P2 = gcnew Page2_SignUp(this);
-	P2->ShowDialog();
-}
-private: System::Void pictureBox5_Click(System::Object^  sender, System::EventArgs^  e) {
-}
-};
+	};
 }

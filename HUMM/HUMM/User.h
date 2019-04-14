@@ -5,18 +5,19 @@ class User : public Person {
 
 private:
 
-	string pass;
+	string pass,cpass;
 
 public:
 
 	User() {}
 
-	User(string first_nmae, string last_name, string uname, string pass) {
+	User(string first_name, string last_name, string uname, string pass,string cpass) {
 
 		this->first_name = first_name;
 		this->last_name = last_name;
 		this->uname = uname;
 		this->pass = pass;
+		this->cpass = cpass;
 	}
 
 	User(string uname, string pass) {
@@ -39,6 +40,10 @@ public:
 
 		return pass;
 	}
+	string getcpass() {
+
+		return cpass;
+	}
 
 	string getuname() {
 
@@ -52,4 +57,5 @@ public:
 
 		return last_name;
 	}
+
 };
