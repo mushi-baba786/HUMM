@@ -3,7 +3,6 @@
 #include "Page3_MainMenu.h"
 #include <msclr\marshal_cppstd.h>
 #include"User.h"
-#include <mysql.h>
 
 namespace HUMM {
 
@@ -48,74 +47,6 @@ namespace HUMM {
 				delete components;
 			}
 		}
-		bool check_user(string uname) {
-
-			MYSQL* conn;
-			MYSQL_ROW row;
-			MYSQL_RES *res;
-
-			int qstate;
-
-
-			conn = mysql_init(0);
-
-			conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
-
-			if (conn) {
-
-				qstate = mysql_query(conn, "select * from user");
-
-				if (!qstate) {
-
-					res = mysql_store_result(conn);
-
-					while (row = mysql_fetch_row(res)) {
-
-						if (uname == row[1]) {
-
-							return false;
-						}
-
-					}
-					return true;
-				}
-			}
-		}
-		bool check_pass(string pass, string cpass) {
-
-			if (pass == cpass) {
-
-				return true;
-			}
-			else {
-
-				return false;
-			}
-		}
-		void insert_data(string first_name, string last_name, string username, string password) {
-
-
-			cout << first_name << last_name << username << password;
-
-			MYSQL* conn;
-			MYSQL_ROW row;
-			MYSQL_RES *res;
-
-			int qstate;
-
-
-			conn = mysql_init(0);
-
-			conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
-
-			string query="insert into user(username,password,first_name,last_name) values('"+username+"','"+password +"','"+first_name +"','"+last_name+"')";
-
-			const char* q = query.c_str();
-			cout << "query is:" << q << endl;
-			mysql_query(conn, q);
-
-		}
-
 
 	private: System::Windows::Forms::TextBox^  pass;
 	private: System::Windows::Forms::TextBox^  uname;
@@ -401,20 +332,24 @@ namespace HUMM {
 
 	private: System::Void button7_Click(System::Object^  sender, System::EventArgs^  e) {
 		
-		User u(msclr::interop::marshal_as<std::string>(fname->Text), msclr::interop::marshal_as<std::string>(lname->Text),msclr::interop::marshal_as<std::string>(uname->Text),
+			User u(msclr::interop::marshal_as<std::string>(fname->Text), msclr::interop::marshal_as<std::string>(lname->Text), msclr::interop::marshal_as<std::string>(uname->Text),
 				msclr::interop::marshal_as < std::string>(pass->Text), msclr::interop::marshal_as < std::string>(cpass->Text));
 
-		bool x = check_user(u.getuname());
+			if (u.check_user(u.getuname())) {
 
-		if (x) {
+				if (u.check_pass(u.getpass(), u.getcpass())) {
 
-			bool y = check_pass(u.getpass(), u.getcpass());
+					u.insert_data(u.getfirstname(), u.getlastname(), u.getuname(), u.getpass());
+				}
+				else {
 
-			if (y) {
-
-				insert_data(u.getfirstname(), u.getlastname(), u.getuname(), u.getpass());
+					MessageBox::Show("Password Did Not Match!!");
+				}
 			}
-		}
+			else {
+
+				MessageBox::Show("Username Alredy Exists!!");
+			}
 		
 		this->Hide();
 		obj->Show();
