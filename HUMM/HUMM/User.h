@@ -2,7 +2,7 @@
 #include "Person.h"
 #include <mysql.h>
 
-class User : public Person{
+class User : public Person {
 
 private:
 
@@ -15,15 +15,18 @@ private:
 
 public:
 
-	bool check_user(string username, string password) {
+	bool check_user() {
+
+		string query = uname;
+		const char* q = query.c_str();
 
 		conn = mysql_init(0);
 
-		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "humm", 0, NULL, 0);
+		conn = mysql_real_connect(conn, "localhost", "root", "abcd", q, 0, NULL, 0);
 
 		if (conn) {
 
-			qstate = mysql_query(conn, "select * from user_login");
+			qstate = mysql_query(conn, "select * from login");
 
 			if (!qstate) {
 
@@ -33,9 +36,17 @@ public:
 
 					cout << row[0] << row[1] << row[2];
 
-					if (username == row[1] && password == row[2]) {
+					if (pass == row[0]) {
 
-						return true;
+
+						if (create_database()) {
+							
+							return false;
+						}
+						else {
+
+							return true;
+						}
 					}
 				}
 				return false;
@@ -43,35 +54,18 @@ public:
 		}
 	}
 
-	bool check_user(string uname) {
+	bool create_database() {
 
 		string query = "CREATE DATABASE " + uname;
 		const char* q = query.c_str();
 
 		conn = mysql_init(0);
 
-		conn = mysql_real_connect(conn, "localhost", "root", "abcd", " ", 0, NULL, 0);
+		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "", 0, NULL, 0);
 
-		if (conn) {
-			
-			qstate = mysql_query(conn, q);
+		qstate = mysql_query(conn, q);
 
-			if (qstate) {
-
-				cout << "table created" << endl;
-				return true;
-			}
-			else {
-
-				cout << "failed" << endl;
-				return false;
-			}
-		}
-	}
-
-	bool check_pass(string pass, string cpass) {
-
-		if (pass == cpass) {
+		if (!qstate) {
 
 			return true;
 		}
@@ -81,17 +75,37 @@ public:
 		}
 	}
 
-	void insert_data(string first_name, string last_name, string username, string password) {
+	void create_logintable() {
+
+		string query = uname;
+		const char* q = query.c_str();
 
 		conn = mysql_init(0);
 
-		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "humm", 0, NULL, 0);
+		conn = mysql_real_connect(conn, "localhost", "root", "abcd", q, 0, NULL, 0);
 
-		string query = "insert into user_login(username,password,first_name,last_name) values('" + username + "','" + password + "','" + first_name + "','" + last_name + "')";
+		query = "use " + uname;
+		q = query.c_str();
+		qstate = mysql_query(conn, q);
 
-		const char* q = query.c_str();
+		qstate = mysql_query(conn, "CREATE TABLE login(password VARCHAR(100) NOT NULL);");
+
+		query = "insert into login(password) values('" + pass + "')";
+		q = query.c_str();
 		mysql_query(conn, q);
 
+	}
+
+	bool check_pass() {
+
+		if (pass == cpass) {
+
+			return true;
+		}
+		else {
+
+			return false;
+		}
 	}
 
 	User() {}
