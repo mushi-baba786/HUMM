@@ -47,6 +47,11 @@ namespace HUMM {
 				delete components;
 			}
 		}
+		void clear() {
+
+			fname->Text = " ";
+			lname->Text=" ";
+		}
 
 	private: System::Windows::Forms::TextBox^  pass;
 	private: System::Windows::Forms::TextBox^  uname;
@@ -152,7 +157,7 @@ namespace HUMM {
 				static_cast<System::Byte>(0)));
 			this->button7->ForeColor = System::Drawing::Color::White;
 			this->button7->ImageAlign = System::Drawing::ContentAlignment::MiddleLeft;
-			this->button7->Location = System::Drawing::Point(280, 466);
+			this->button7->Location = System::Drawing::Point(280, 465);
 			this->button7->Margin = System::Windows::Forms::Padding(9, 11, 9, 11);
 			this->button7->Name = L"button7";
 			this->button7->RightToLeft = System::Windows::Forms::RightToLeft::No;
@@ -335,30 +340,34 @@ namespace HUMM {
 			User u(msclr::interop::marshal_as<std::string>(fname->Text), msclr::interop::marshal_as<std::string>(lname->Text), msclr::interop::marshal_as<std::string>(uname->Text),
 				msclr::interop::marshal_as < std::string>(pass->Text), msclr::interop::marshal_as < std::string>(cpass->Text));
 
-			if (u.check_user(u.getuname())) {
+			if (u.check_pass()) {
 
-				if (u.check_pass(u.getpass(), u.getcpass())) {
+				if (u.create_database()){
 
-					u.insert_data(u.getfirstname(), u.getlastname(), u.getuname(), u.getpass());
+					u.create_logintable();
+					this->Hide();
+					obj->Show();
 				}
 				else {
 
-					MessageBox::Show("Password Did Not Match!!");
+					MessageBox::Show("Username Alredy Exists!!");
+					clear();
+					
 				}
 			}
 			else {
 
-				MessageBox::Show("Username Alredy Exists!!");
+				MessageBox::Show("Password Did Not Match!!");
 			}
 		
-		this->Hide();
-		obj->Show();
+		
 }
 private: System::Void Page2_SignUp_Load(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void groupBox1_Enter(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+
 }
 private: System::Void uanme_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 }
