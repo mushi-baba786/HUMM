@@ -2,11 +2,11 @@
 #include "Person.h"
 #include <mysql.h>
 
-class User : public Person {
+class User : public Person{
 
 private:
 
-	string pass,cpass;
+	string pass, cpass;
 	MYSQL* conn;
 	MYSQL_ROW row;
 	MYSQL_RES *res;
@@ -17,40 +17,13 @@ public:
 
 	bool check_user(string username, string password) {
 
-			conn = mysql_init(0);
-
-			conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
-
-			if (conn) {
-
-				qstate = mysql_query(conn, "select * from user");
-
-				if (!qstate) {
-					
-					res = mysql_store_result(conn);
-
-					while (row = mysql_fetch_row(res)) {
-
-						cout << row[0] << row[1] << row[2];
-
-						if (username == row[1] && password == row[2]) {
-
-							return true;
-						}
-					}
-					return false;
-				}
-			}
-		}
-	bool check_user(string uname) {
-
 		conn = mysql_init(0);
 
-		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
+		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "humm", 0, NULL, 0);
 
 		if (conn) {
 
-			qstate = mysql_query(conn, "select * from user");
+			qstate = mysql_query(conn, "select * from user_login");
 
 			if (!qstate) {
 
@@ -58,87 +31,108 @@ public:
 
 				while (row = mysql_fetch_row(res)) {
 
-					if (uname == row[1]) {
+					cout << row[0] << row[1] << row[2];
 
-						return false;
+					if (username == row[1] && password == row[2]) {
+
+						return true;
 					}
-
 				}
-				return true;
+				return false;
 			}
 		}
 	}
-	bool check_pass(string pass, string cpass) {
-
-		if (pass == cpass) {
-
-			return true;
-		}
-		else {
-
-			return false;
-		}
-	}
-	void insert_data(string first_name, string last_name, string username, string password) {
+	bool check_user(string uname) {
 
 		conn = mysql_init(0);
 
-		conn = mysql_real_connect(conn, "localhost", "root", "abcd", "user_login", 0, NULL, 0);
+		conn = mysql_real_connect(conn, "localhost", "root", "abcd", " ", 0, NULL, 0);
 
-		string query = "insert into user(username,password,first_name,last_name) values('" + username + "','" + password + "','" + first_name + "','" + last_name + "')";
+		if (conn) {
+			
+			qstate = mysql_query(conn, " CREATE DATABASE "+uname);
 
-		const char* q = query.c_str();
-		mysql_query(conn, q);
+			if (qstate) {
 
+				cout << "table created" << endl;
+			}
+			else {
+
+				cout << "failed" << endl;
+			}
+		}
 	}
+		bool check_pass(string pass, string cpass) {
 
-	User() {}
+			if (pass == cpass) {
 
-	User(string first_name, string last_name, string uname, string pass,string cpass) {
+				return true;
+			}
+			else {
 
-		this->first_name = first_name;
-		this->last_name = last_name;
-		this->uname = uname;
-		this->pass = pass;
-		this->cpass = cpass;
-	}
+				return false;
+			}
+		}
+		void insert_data(string first_name, string last_name, string username, string password) {
 
-	User(string uname, string pass) {
+			conn = mysql_init(0);
 
-		this->uname = uname;
-		this->pass = pass;
-	}
+			conn = mysql_real_connect(conn, "localhost", "root", "abcd", "humm", 0, NULL, 0);
 
-	void setPass(string pass) {
+			string query = "insert into user_login(username,password,first_name,last_name) values('" + username + "','" + password + "','" + first_name + "','" + last_name + "')";
 
-		pass = pass;
-	}
+			const char* q = query.c_str();
+			mysql_query(conn, q);
 
-	void setUname(string uname) {
+		}
 
-		uname = uname;
-	}
+		User() {}
 
-	string getpass() {
+		User(string first_name, string last_name, string uname, string pass, string cpass) {
 
-		return pass;
-	}
-	string getcpass() {
+			this->first_name = first_name;
+			this->last_name = last_name;
+			this->uname = uname;
+			this->pass = pass;
+			this->cpass = cpass;
+		}
 
-		return cpass;
-	}
+		User(string uname, string pass) {
 
-	string getuname() {
+			this->uname = uname;
+			this->pass = pass;
+		}
 
-		return uname;
-	}
-	string getfirstname() {
+		void setPass(string pass) {
 
-		return first_name;
-	}
-	string getlastname() {
+			pass = pass;
+		}
 
-		return last_name;
-	}
+		void setUname(string uname) {
+
+			uname = uname;
+		}
+
+		string getpass() {
+
+			return pass;
+		}
+		string getcpass() {
+
+			return cpass;
+		}
+
+		string getuname() {
+
+			return uname;
+		}
+		string getfirstname() {
+
+			return first_name;
+		}
+		string getlastname() {
+
+			return last_name;
+		}
 
 };
