@@ -38,15 +38,7 @@ public:
 
 					if (pass == row[0]) {
 
-
-						if (create_database()) {
-							
-							return false;
-						}
-						else {
-
-							return true;
-						}
+						return true;
 					}
 				}
 				return false;
