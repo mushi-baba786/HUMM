@@ -34,19 +34,9 @@ public:
 
 				while (row = mysql_fetch_row(res)) {
 
-					cout << row[0] << row[1] << row[2];
-
 					if (pass == row[0]) {
 
-
-						if (create_database()) {
-							
-							return false;
-						}
-						else {
-
-							return true;
-						}
+						return true;
 					}
 				}
 				return false;
