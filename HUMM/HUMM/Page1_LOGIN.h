@@ -7,9 +7,6 @@
 
 namespace HUMM {
 
-	using namespace std;
-	// namespace to change textbox text to string
-	using namespace msclr::interop;
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -285,47 +282,46 @@ namespace HUMM {
 			this->PerformLayout();
 
 		}
-		#pragma endregion
-		private: System::Void Page1_LOGIN_Load(System::Object^  sender, System::EventArgs^  e) {
-		}
-		private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
-		}
-		private: System::Void pictureBox3_Click(System::Object^  sender, System::EventArgs^  e) {
-		}
+#pragma endregion
+	private: System::Void Page1_LOGIN_Load(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void pictureBox1_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void pictureBox3_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+private: System::Void textBox1_Click(System::Object^  sender, System::EventArgs^  e) 
+{
+	username->Clear();
 
-		private: System::Void textBox1_Click(System::Object^  sender, System::EventArgs^  e) 
-		{
-			username->Clear();
+}
+private: System::Void textBox2_Click(System::Object^  sender, System::EventArgs^  e) {
+	password->Clear();
+}
+private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
 
-		}
-		private: System::Void textBox2_Click(System::Object^  sender, System::EventArgs^  e) {
-			password->Clear();
-		}
-		private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-		}
-		private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+		User u(msclr::interop::marshal_as<std::string>(username->Text), msclr::interop::marshal_as < std::string>(password->Text));
 
-				User u(marshal_as<string>(username->Text), marshal_as <string>(password->Text));
+		if (u.check_user()) {
 
-				if (u.check_user(u.getuname(), u.getpass())) {
-
-					this->Hide();
-					Page3_MainMenu^ P3 = gcnew Page3_MainMenu(this);
-					P3->ShowDialog();
-				}
-				else {
-
-					MessageBox::Show("No Username or Password Found!!");
-				}
-		}
-		private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-		}
-		private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
 			this->Hide();
-			Page2_SignUp^ P2 = gcnew Page2_SignUp(this);
-			P2->ShowDialog();
+			Page3_MainMenu^ P3 = gcnew Page3_MainMenu(this);
+			P3->ShowDialog();
 		}
-		private: System::Void pictureBox5_Click(System::Object^  sender, System::EventArgs^  e) {
+		else {
+
+			MessageBox::Show("No Username or Password Found!!");
 		}
-	};
+}
+private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
+	this->Hide();
+	Page2_SignUp^ P2 = gcnew Page2_SignUp(this);
+	P2->ShowDialog();
+}
+private: System::Void pictureBox5_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+};
 }
