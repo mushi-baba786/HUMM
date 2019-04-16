@@ -93,14 +93,6 @@ public:
 		query = "insert into inventory(id,product_name,cost,price,quantity) values('" + id + "','" + name + "','" + cost + "','" + price + "','" + qty + "')";
 		q = query.c_str();
 		mysql_query(conn, q);
-		if (mysql_query(conn, q)) {
-
-			cout << "DONE" << endl;
-		}
-		else {
-
-			cout << "Failed" << endl;
-		}
 	}
 	bool check_pass() {
 
