@@ -49,8 +49,11 @@ namespace HUMM {
 		}
 		void clear() {
 
-			fname->Text = " ";
-			lname->Text=" ";
+			fname->Text = "";
+			lname->Text = "";
+			uname->Text = "";
+			pass->Text	= "";
+			cpass->Text = "";
 		}
 
 	private: System::Windows::Forms::TextBox^  pass;
@@ -345,18 +348,19 @@ namespace HUMM {
 				if (u.create_database()){
 
 					u.create_logintable();
+					u.createInventory();
 					this->Hide();
 					obj->Show();
 				}
 				else {
 
-					MessageBox::Show("Username Alredy Exists!!");
 					clear();
-					
+					MessageBox::Show("Username Alredy Exists!!");	
 				}
 			}
 			else {
 
+				clear();
 				MessageBox::Show("Password Did Not Match!!");
 			}
 		
