@@ -39,6 +39,11 @@ namespace HUMM {
 				delete components;
 			}
 		}
+		void clear() {
+
+			username->Text = "";
+			password->Text = "";
+		}
 		
 	private: System::Windows::Forms::PictureBox^  pictureBox1;
 	private: System::Windows::Forms::Label^  label1;
@@ -300,6 +305,7 @@ private: System::Void textBox2_Click(System::Object^  sender, System::EventArgs^
 private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+		
 
 		User u(msclr::interop::marshal_as<std::string>(username->Text), msclr::interop::marshal_as < std::string>(password->Text));
 
@@ -311,6 +317,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 		}
 		else {
 
+			clear();
 			MessageBox::Show("No Username or Password Found!!");
 		}
 }
