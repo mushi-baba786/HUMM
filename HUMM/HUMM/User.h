@@ -7,18 +7,19 @@ class User : public Person {
 private:
 
 	string pass, cpass;
+	string query;
+	const char* q;
 	MYSQL* conn;
 	MYSQL_ROW row;
 	MYSQL_RES *res;
 	int qstate;
 
-
 public:
 
 	bool check_user() {
 
-		string query = uname;
-		const char* q = query.c_str();
+		query = uname;
+		q = query.c_str();
 
 		conn = mysql_init(0);
 
@@ -42,12 +43,13 @@ public:
 				return false;
 			}
 		}
+		return false;
 	}
 
 	bool create_database() {
 
-		string query = "CREATE DATABASE " + uname;
-		const char* q = query.c_str();
+		query = "CREATE DATABASE " + uname;
+		q = query.c_str();
 
 		conn = mysql_init(0);
 
@@ -67,16 +69,12 @@ public:
 
 	void create_logintable() {
 
-		string query = uname;
-		const char* q = query.c_str();
+		query = uname;
+		q = query.c_str();
 
 		conn = mysql_init(0);
 
 		conn = mysql_real_connect(conn, "localhost", "root", "abcd", q, 0, NULL, 0);
-
-		query = "use " + uname;
-		q = query.c_str();
-		qstate = mysql_query(conn, q);
 
 		qstate = mysql_query(conn, "CREATE TABLE login(password VARCHAR(100) NOT NULL);");
 
@@ -85,7 +83,25 @@ public:
 		mysql_query(conn, q);
 
 	}
+	void createInventory() {
 
+		mysql_query(conn, "CREATE TABLE inventory(id VARCHAR(100) NOT NULL, product_name VARCHAR(100) NOT NULL, cost DOUBLE NOT NULL, price DOUBLE NOT NULL, quantity INT NOT NULL,PRIMARY KEY(id));");
+	}
+	void insert_inventory(string id, string name, string cost, string price, string qty) {
+
+		cout << "DONE" << endl;
+		query = "insert into inventory(id,product_name,cost,price,quantity) values('" + id + "','" + name + "','" + cost + "','" + price + "','" + qty + "')";
+		q = query.c_str();
+		mysql_query(conn, q);
+		if (mysql_query(conn, q)) {
+
+			cout << "DONE" << endl;
+		}
+		else {
+
+			cout << "Failed" << endl;
+		}
+	}
 	bool check_pass() {
 
 		if (pass == cpass) {
